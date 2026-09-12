@@ -54,6 +54,7 @@ export function computeCar(car) {
 export function splitKm(kmYear, alloc) {
   return {
     mhd: kmYear * (alloc.mhd || 0),
+    regbus: kmYear * (alloc.regbus || 0),
     train: kmYear * (alloc.train || 0),
     coach: kmYear * (alloc.coach || 0),
     bike: kmYear * (alloc.bike || 0),
@@ -79,6 +80,7 @@ export function computeAlt(kmYear, alloc, opts) {
   const children = Math.max(0, Math.round(opts.people?.children ?? 0))
   const heads = Math.max(1, adults + children)
   // Koľko platiacich dospelých stojí skupina na jednotlivých lístkoch.
+  const regbusFares = adults + children * prices.regbusChildRate
   const trainFares = adults + children * prices.trainChildRate
   const coachFares = adults + children * prices.coachChildRate
   const per = (n) => (heads > 1 ? ` × ${fmtNum(n, n % 1 ? 2 : 0)}` : '')
@@ -99,6 +101,15 @@ export function computeAlt(kmYear, alloc, opts) {
       co2: (km.mhd * heads * CO2_MODES.mhd) / 1000,
       km: km.mhd,
       color: '#2d8f8f',
+    },
+    {
+      key: 'regbus',
+      label: 'Prímestský autobus',
+      detail: `${fmtKm(km.regbus)} km ročne × ${fmtNum(prices.regbusPerKm, 3)} €/km${per(regbusFares)}`,
+      value: km.regbus * prices.regbusPerKm * regbusFares,
+      co2: (km.regbus * heads * CO2_MODES.regbus) / 1000,
+      km: km.regbus,
+      color: '#4e9b6b',
     },
     {
       key: 'train',
@@ -157,6 +168,24 @@ export function computeAlt(kmYear, alloc, opts) {
     boltTrips,
     heads,
   }
+}
+
+/**
+ * Preklopenie alternatívy medzi mestom a vidiekom. Podiel kilometrov si
+ * používateľ nastavil sám, preto ho pri prepnutí neresetujeme — len ho
+ * presunieme na dopravu, ktorá v danom prostredí vôbec existuje: mestské
+ * predplatné mimo miest nekúpiš, prímestský autobus v meste nepotrebuješ.
+ */
+export function toArea(alloc, area) {
+  const out = { ...alloc }
+  if (area === 'rural') {
+    out.regbus = (out.regbus || 0) + (out.mhd || 0)
+    out.mhd = 0
+  } else {
+    out.mhd = (out.mhd || 0) + (out.regbus || 0)
+    out.regbus = 0
+  }
+  return out
 }
 
 /**

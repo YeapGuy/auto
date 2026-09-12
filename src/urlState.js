@@ -1,4 +1,5 @@
 import { ALT_PRICES, CITIES, FUELS, PROFILES } from './data.js'
+import { toArea } from './calc.js'
 
 // Stav kalkulačky vieme zabaliť do adresy, aby sa dal poslať aj s výpočtom.
 // Ukladáme len to, čo sa líši od zvoleného profilu, takže bežný odkaz zostane
@@ -51,6 +52,7 @@ export function defaultState() {
     profileId: BASE.id,
     car: { ...BASE.car },
     alloc: { ...BASE.alloc },
+    area: 'city',
     city: BASE.city,
     bikeType: BASE.bikeType,
     prices: { ...ALT_PRICES },
@@ -69,6 +71,7 @@ export function encodeState(state) {
   if (Object.keys(alloc).length) payload.a = alloc
   if (Object.keys(prices).length) payload.r = prices
   if (state.city !== profile.city) payload.t = state.city
+  if (state.area === 'rural') payload.g = state.area
   if (state.bikeType !== profile.bikeType) payload.b = state.bikeType
   if (state.horizon !== DEFAULT_HORIZON) payload.h = state.horizon
   const people = changed(state.people, DEFAULT_PEOPLE)
@@ -91,6 +94,7 @@ export function decodeState(token) {
   car.occupancy = Math.max(1, car.occupancy)
   car.years = Math.max(1, Math.round(car.years))
 
+  const area = payload.g === 'rural' ? 'rural' : 'city'
   const bikeType = payload.b === 'ebike' || payload.b === 'bike' ? payload.b : profile.bikeType
   const city = CITIES.some((c) => c.id === payload.t) ? payload.t : profile.city
   const horizon = Number.isFinite(Number(payload.h))
@@ -100,7 +104,9 @@ export function decodeState(token) {
   return {
     profileId: profile.id,
     car,
-    alloc: sanitize(profile.alloc, payload.a),
+    // Odkaz môže niesť aj podiely, ktoré do zvoleného prostredia nepatria.
+    alloc: toArea(sanitize(profile.alloc, payload.a), area),
+    area,
     city,
     bikeType,
     prices: sanitize(ALT_PRICES, payload.r),

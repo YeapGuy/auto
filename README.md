@@ -1,8 +1,9 @@
 # Koľko ťa naozaj stojí auto?
 
 Kalkulačka skutočných nákladov auta na Slovensku — **peňaženka aj ovzdušie**. Ukáže, koľko auto
-naozaj stojí (nielen tankovanie), aká je jeho uhlíková stopa, a porovná to s kombináciou MHD,
-vlaku, diaľkového autobusu, bicykla a Boltu, ktorú si používateľ poskladá sám.
+naozaj stojí (nielen tankovanie), aká je jeho uhlíková stopa, a porovná to s kombináciou MHD alebo
+prímestského autobusu, vlaku, diaľkového autobusu, bicykla a Boltu, ktorú si používateľ poskladá
+sám — zvlášť pre mesto a zvlášť pre život mimo neho.
 
 ## Spustenie
 
@@ -42,9 +43,13 @@ npm run build
   najlacnejší balík STK + EK 72–79 € na dva roky
 - **PZP** — priemer 168 €/rok, **diaľničná známka** 90 € (elektromobil 45 €), **STK + EK** ~85 € / 2 roky
 - **Parkovanie** — rezidentská karta PAAS Bratislava 39 €/rok
+- **Prímestský autobus** — tarifa KSK, ceny z čipovej karty: 18–20 km za 1,60 € (0,084 €/km),
+  26–30 km za 2,00 € (0,071 €/km); ako východisko 0,08 €/km. V hotovosti je lístok o 0,50 €
+  drahší, deti a študenti do 26 rokov platia presne polovicu
 - **MHD ročné predplatné** — Bratislava 263 €, Košice 240 €, Banská Bystrica ~220 €, Prešov 219 €, Žilina 195 €
 - **Vlak** — ZSSK, IC Bratislava–Košice (445 km) 16–21 €, teda 0,043 €/km na diaľkovej trase
-- **Emisie** — ZSSK 24,84 g CO₂e/os.km, mestská MHD 80 g, diaľkový autobus 31 g (Umweltbundesamt 2022)
+- **Emisie** — ZSSK 24,84 g CO₂e/os.km, mestská MHD 80 g, diaľkový autobus 31 g, prímestský
+  autobus 69,6 g (Umweltbundesamt 2022; prímestský jazdí menej obsadený než mestský)
 - **Elektrina** — slovenský mix 87 g CO₂/kWh (2025), doma 0,22 €/kWh
 
 ## Metodika v skratke
@@ -59,6 +64,11 @@ npm run build
   polovičné predplatné (IDS BK 131,50 €) a vo vlaku po registrácii cestujú zadarmo. Emisie auta sa
   medzi cestujúcich delia, takže plne obsadené auto vie prekonať aj mestskú MHD — kalkulačka to
   povie nahlas.
+- **Mesto a vidiek:** prepínač nad staviteľom alternatívy mení, čo sa vôbec dá zvoliť. V meste
+  je to predplatný lístok MHD, mimo neho prímestský autobus za jednotlivé cestovné. Podiely
+  kilometrov sa pri prepnutí neresetujú, len sa presunú na dopravu, ktorá v danom prostredí
+  existuje (`toArea` v `calc.js`). Mimo mesta kalkulačka otvorene hovorí, že pri pár spojoch denne
+  auto nahradiť úplne nejde a že reálnym výsledkom býva zrušiť druhé auto, nie to prvé.
 - **Nezapočítané:** výroba vozidiel a infraštruktúry, úroky z úveru, pokuty, škody pri nehodách,
   čas v zápche, pri LPG ani prestavba a revízia tlakovej nádrže. Kalkulačka teda skôr podhodnocuje.
 

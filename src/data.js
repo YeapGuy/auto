@@ -107,6 +107,18 @@ export const SOURCES = [
     note: 'Ročný predplatný lístok pre obyvateľa Žiliny 195 €, pre žiakov 6–15 rokov a seniorov 62–69 len 30 €.',
   },
   {
+    id: 'ksktarifa',
+    label: 'Tarifa prímestskej autobusovej dopravy — Košický samosprávny kraj (eurobus, ARRIVA Michalovce)',
+    url: 'https://www.eurobus.sk/public/media/1065/tarifa-pravidelnej-primestskej-dopravy-od-1-2.pdf',
+    note: 'Jednosmerné základné cestovné z čipovej karty podľa tarifnej vzdialenosti: 8–10 km 1,00 €, 18–20 km 1,60 €, 26–30 km 2,00 €, 41–45 km 2,60 €. V hotovosti je lístok o 0,50 € drahší. Deti a študenti do 26 rokov platia presne polovicu (18–20 km 0,80 €).',
+  },
+  {
+    id: 'ubaregio',
+    label: 'Umweltbundesamt Rakúsko (REP-0801, 2022) — Ökobilanz autobusov',
+    url: 'https://www.umweltbundesamt.at/fileadmin/site/publikationen/rep0801.pdf',
+    note: 'Prímestský dieselový autobus 69,6 g CO₂e na osobokilometer pri 20 % priemernej obsadenosti, vrátane výroby vozidla.',
+  },
+  {
     id: 'zsskcena',
     label: 'ZSSK — cestovné lístky',
     url: 'https://www.zssk.sk/cestovny-listok/',
@@ -179,6 +191,9 @@ export const EV_PRICE_PUBLIC = 0.49
 export const CO2_MODES = {
   train: 24.84, // ZSSK, vlastný vykazovaný údaj
   mhd: 80, // mix mestského autobusu (93) a električky/trolejbusu (63), UBA 2022
+  // Prímestský autobus jazdí menej obsadený než mestský, preto má na
+  // osobokilometer vyššiu stopu než diaľkový aj mestský autobus.
+  regbus: 69.6, // Umweltbundesamt Rakúsko, REP-0801 (2022), 20 % obsadenosť
   coach: 31, // diaľkový autobus, UBA 2022
   bike: 0,
   ebike: 3,
@@ -198,12 +213,42 @@ export const CITIES = [
   { id: 'za', label: 'Žilina — rezident', year: 195, yearChild: 30, src: 'dpmz' },
 ]
 
+// --- Kde človek býva -------------------------------------------------------
+// Kalkulačka pôvodne rátala mestskú alternatívu, lenže predplatný lístok MHD
+// existuje len v pár slovenských mestách. Mimo nich nastupuje prímestský
+// autobus a vlak za jednotlivé cestovné — a hlavne iná miera toho, čo sa vôbec
+// dá nahradiť. Preto sú to dva režimy, nie jedna priemerná pravda.
+export const AREAS = {
+  city: {
+    id: 'city',
+    label: 'V meste',
+    hint: 'Bratislava, Košice, Žilina a spol.',
+    note:
+      'V meste je alternatíva najsilnejšia: predplatný lístok platí celý rok bez ohľadu na to, ' +
+      'koľko ním najazdíš, zastávka býva do desiatich minút chôdze a krátke cesty pokryje bicykel.',
+  },
+  rural: {
+    id: 'rural',
+    label: 'Mimo mesta',
+    hint: 'dedina alebo malé mesto bez MHD',
+    note:
+      'Mimo miest MHD spravidla nie je, preto tu namiesto predplatného rátame prímestský autobus ' +
+      '(SAD, Arriva) a vlak za jednotlivé cestovné. A povedzme rovno aj to druhé: pri pár spojoch ' +
+      'denne auto nahradiť úplne nejde.',
+  },
+}
+
 // --- Ceny alternatív -------------------------------------------------------
 // Vlak: tarifa ZSSK je degresívna — krátke regionálne cesty vychádzajú na km
 // drahšie než diaľkové. IC Bratislava–Košice (445 km) za ~19 € je 0,043 €/km,
 // bežná regionálna cesta vyjde okolo 0,09 €/km. Ako východisko berieme stred.
 export const ALT_PRICES = {
   trainPerKm: 0.065,
+  // Prímestský autobus: tarifa je pásmová a degresívna. Rátame cenu z čipovej
+  // karty, lebo kto autobusom dochádza, kartu má — v hotovosti je každý lístok
+  // o 0,50 € drahší. Dochádzanie na 18–20 km stojí 1,60 € (0,084 €/km),
+  // na 26–30 km 2,00 € (0,071 €/km). Ako východisko berieme stred.
+  regbusPerKm: 0.08,
   coachPerKm: 0.05, // FlixBus/RegioJet BA–KE ≈ 22 € / 445 km
   boltTripAvg: 7.0, // priemerná mestská jazda (4–5 km) podľa cenníkových príkladov
   boltTripKm: 5,
@@ -214,6 +259,7 @@ export const ALT_PRICES = {
   avgSpeed: 40, // km/h
   // Podiel z ceny dospelého, ktorý za dieťa zaplatíš navyše.
   trainChildRate: 0, // ZSSK: deti do 15 a študenti do 26 majú 100 % zľavu
+  regbusChildRate: 0.5, // zľavnené cestovné je v tarife presne polovičné
   coachChildRate: 0.5, // odhad, dopravcovia detské zľavy nezverejňujú jednotne
 }
 
@@ -225,7 +271,7 @@ export const PROFILES = [
     tagline: 'Ojazdená Fabia, jazda hlavne po meste',
     city: 'ba',
     bikeType: 'bike',
-    alloc: { mhd: 0.62, train: 0.15, coach: 0.03, bike: 0.19, bolt: 0.01 },
+    alloc: { mhd: 0.62, regbus: 0, train: 0.15, coach: 0.03, bike: 0.19, bolt: 0.01 },
     car: {
       price: 9000,
       years: 6,
@@ -250,7 +296,7 @@ export const PROFILES = [
     tagline: 'Dieselová Octavia, denné dochádzanie do práce',
     city: 'ke',
     bikeType: 'bike',
-    alloc: { mhd: 0.4, train: 0.37, coach: 0.1, bike: 0.12, bolt: 0.01 },
+    alloc: { mhd: 0.4, regbus: 0, train: 0.37, coach: 0.1, bike: 0.12, bolt: 0.01 },
     car: {
       price: 15000,
       years: 7,
@@ -275,7 +321,7 @@ export const PROFILES = [
     tagline: 'Nové auto z autosalónu, jazda po meste aj diaľnici',
     city: 'ba',
     bikeType: 'bike',
-    alloc: { mhd: 0.47, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
+    alloc: { mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
     car: {
       price: 35000,
       years: 8,
@@ -300,7 +346,7 @@ export const PROFILES = [
     tagline: 'Nový elektromobil, 80 % nabíjania doma',
     city: 'ba',
     bikeType: 'ebike',
-    alloc: { mhd: 0.47, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
+    alloc: { mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
     car: {
       price: 38000,
       years: 8,
@@ -325,7 +371,7 @@ export const PROFILES = [
     tagline: 'Dvadsaťročná jazdenka, jazdí sa len keď treba',
     city: 'po',
     bikeType: 'bike',
-    alloc: { mhd: 0.57, train: 0.2, coach: 0.05, bike: 0.17, bolt: 0.01 },
+    alloc: { mhd: 0.57, regbus: 0, train: 0.2, coach: 0.05, bike: 0.17, bolt: 0.01 },
     car: {
       price: 1200,
       years: 5,

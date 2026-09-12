@@ -612,6 +612,69 @@ input[type='range'] {
 }
 
 /* --------------------------------------------------------- alternatíva */
+/* Prepínač mesto / mimo mesta. Stojí nad celým staviteľom alternatívy, lebo
+   mení to, čo sa v ňom vôbec dá zvoliť. */
+.areaflip {
+  border: 1px solid var(--rule);
+  border-bottom: 0;
+  background: var(--card);
+  padding: 22px 26px;
+}
+
+.areaflip-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.areaswitch {
+  display: inline-flex;
+  border: 1px solid var(--green);
+}
+
+.areaswitch button {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+  padding: 8px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.areaswitch button small {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.75;
+}
+
+.areaswitch button + button {
+  border-left: 1px solid var(--green);
+}
+
+.areaswitch button[aria-pressed='true'] {
+  background: var(--green);
+  color: #fff;
+}
+
+.areanote {
+  margin: 14px 0 0;
+  max-width: 74ch;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
 .altgrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1322,6 +1385,16 @@ footer.site {
   .panel,
   .versus {
     padding: 22px;
+  }
+  .areaflip {
+    padding: 20px 22px;
+  }
+  /* Na mobile sa prepínač roztiahne na celú šírku, nech sa doň dá trafiť. */
+  .areaswitch {
+    width: 100%;
+  }
+  .areaswitch button {
+    flex: 1;
   }
   .verdict {
     padding: 24px;

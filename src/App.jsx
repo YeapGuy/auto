@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import {
+  AREAS,
   CITIES,
   CO2_MODES,
   DEFAULT_CONSUMPTION,
@@ -20,18 +21,31 @@ import {
   roundMid,
   roundTo,
   TAXI_CONSUMPTION,
+  toArea,
 } from './calc.js'
 import { Advanced, InlineNum, NumField, SelectField, Slider } from './components/ui.jsx'
-import { IconBike, IconBus, IconCoach, IconTaxi, IconTrain } from './components/icons.jsx'
+import {
+  IconBike,
+  IconBus,
+  IconCoach,
+  IconRegBus,
+  IconTaxi,
+  IconTrain,
+} from './components/icons.jsx'
 import { bootState, plainUrl, stateUrl } from './urlState.js'
 
+// Doprava, ktorú si používateľ skladá. Mestské predplatné a prímestský autobus
+// sa vylučujú — každé patrí do iného prostredia, zvyšok platí v oboch.
 const MODES = [
-  { key: 'mhd', Icon: IconBus, name: 'MHD, predplatný lístok' },
+  { key: 'mhd', Icon: IconBus, name: 'MHD, predplatný lístok', area: 'city' },
+  { key: 'regbus', Icon: IconRegBus, name: 'Prímestský autobus', area: 'rural' },
   { key: 'train', Icon: IconTrain, name: 'Vlak (ZSSK)' },
   { key: 'coach', Icon: IconCoach, name: 'Diaľkový autobus' },
   { key: 'bike', Icon: IconBike, name: 'Bicykel' },
   { key: 'bolt', Icon: IconTaxi, name: 'Bolt alebo taxík' },
 ]
+
+const modesFor = (area) => MODES.filter((m) => !m.area || m.area === area)
 
 const idx = (i) => String(i + 1).padStart(2, '0')
 
@@ -69,6 +83,7 @@ export default function App() {
   const [profileId, setProfileId] = useState(boot.profileId)
   const [car, setCar] = useState(boot.car)
   const [alloc, setAlloc] = useState(boot.alloc)
+  const [area, setArea] = useState(boot.area)
   const [city, setCity] = useState(boot.city)
   const [bikeType, setBikeType] = useState(boot.bikeType)
   const [prices, setPrices] = useState(boot.prices)
@@ -78,9 +93,16 @@ export default function App() {
   function pickProfile(p) {
     setProfileId(p.id)
     setCar({ ...p.car })
-    setAlloc({ ...p.alloc })
+    // Profily sú poskladané pre mesto. Kto si prepol vidiek, nech mu ho výber
+    // auta neprepne späť — alternatívu len preložíme do jeho prostredia.
+    setAlloc(toArea(p.alloc, area))
     setCity(p.city)
     setBikeType(p.bikeType)
+  }
+
+  function pickArea(next) {
+    setArea(next)
+    setAlloc((a) => toArea(a, next))
   }
 
   const set = (k) => (v) => setCar((c) => ({ ...c, [k]: v }))
@@ -94,6 +116,7 @@ export default function App() {
     () => computeAlt(car.kmYear, alloc, { city, bikeType, prices, people }),
     [car.kmYear, alloc, city, bikeType, prices, people]
   )
+  const areaMeta = AREAS[area] || AREAS.city
 
   const saving = res.total - alt.total
   const co2Saving = res.co2Total - alt.co2Total
@@ -430,16 +453,34 @@ export default function App() {
               <h2>Život bez auta</h2>
               <p>
                 Rozdeľ svojich {fmtKm(car.kmYear)} km medzi dopravu, ktorú by si reálne použil.
-                Nikto nečaká, že pôjdeš všade MHD. Pridaj si vlak na výlety aj pár Boltov na večer.
               </p>
             </div>
           </div>
 
           <div className="body-col">
+            <div className="areaflip">
+              <div className="areaflip-head">
+                <span className="label">Kde žiješ</span>
+                <div className="areaswitch" role="group" aria-label="Kde bývaš">
+                  {Object.values(AREAS).map((a) => (
+                    <button
+                      key={a.id}
+                      aria-pressed={area === a.id}
+                      onClick={() => pickArea(a.id)}
+                    >
+                      {a.label}
+                      <small>{a.hint}</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <p className="areanote">{areaMeta.note}</p>
+            </div>
+
             <div className="altgrid">
               <div className="panel">
                 <div className="people">
-                  <span className="label">Koľko ľudí by potrebovalo lístky navyše</span>
+                  <span className="label">Koľko ľudí primárne využíva toto auto</span>
                   <div className="peoplefields">
                     <Stepper
                       label="Dospelí"
@@ -461,17 +502,19 @@ export default function App() {
                   </p>
                 </div>
 
-                <SelectField
-                  label="Mesto, kde by si kupoval predplatný lístok"
-                  value={city}
-                  onChange={setCity}
-                  options={CITIES.map((c) => ({
-                    value: c.id,
-                    label: `${c.label} — ${fmtEur(c.year)}/rok`,
-                  }))}
-                />
+                {area === 'city' && (
+                  <SelectField
+                    label="Mesto, kde by si kupoval predplatný lístok"
+                    value={city}
+                    onChange={setCity}
+                    options={CITIES.map((c) => ({
+                      value: c.id,
+                      label: `${c.label} — ${fmtEur(c.year)}/rok`,
+                    }))}
+                  />
+                )}
                 <div style={{ height: 8 }} />
-                {MODES.map(({ key, Icon, name }) => {
+                {modesFor(area).map(({ key, Icon, name }) => {
                   const pct = Math.round((alloc[key] || 0) * 100)
                   const km = car.kmYear * (alloc[key] || 0)
                   const item = alt.items.find((i) => i.key === key)
@@ -504,6 +547,12 @@ export default function App() {
                           <div className="checkline">
                             {fmtNum(alt.boltTrips / 12, 1)} jazdy mesačne po{' '}
                             {fmtNum(prices.boltTripKm, 1)} km
+                          </div>
+                        )}
+                        {key === 'bolt' && km > 0 && area === 'rural' && (
+                          <div className="checkline">
+                            Mimo miest a ich okolia Bolt spravidla nejazdí. Rátaj s bežným taxíkom,
+                            objednaným dopredu a drahšie.
                           </div>
                         )}
                         {key === 'bike' && (
@@ -714,7 +763,7 @@ export default function App() {
       <ShareCta
         monthly={res.monthly}
         saving={saving}
-        state={{ profileId, car, alloc, city, bikeType, prices, horizon, people }}
+        state={{ profileId, car, alloc, area, city, bikeType, prices, horizon, people }}
       />
 
       <Sources />
@@ -994,8 +1043,25 @@ function Sources() {
           <p>
             <b>Emisie alternatív.</b> Vlak 24,84 g CO₂e/os.km podľa vlastného vykazovania ZSSK,
             mestská MHD 80 g (mix autobusu 93 g a električky či trolejbusu 63 g podľa
-            Umweltbundesamt), diaľkový autobus 31 g, elektrobicykel 3 g, bicykel a chôdza 0 g. Bolt
-            počítame ako auto so 6,8 l/100 km a prirážkou 30 % za jazdy naprázdno.
+            Umweltbundesamt), diaľkový autobus 31 g, prímestský autobus 69,6 g, elektrobicykel 3 g,
+            bicykel a chôdza 0 g. Bolt počítame ako auto so 6,8 l/100 km a prirážkou 30 % za jazdy
+            naprázdno.
+          </p>
+          <p>
+            <b>Mesto a vidiek.</b> Predplatný lístok MHD sa dá kúpiť len v mestách, ktoré ju majú.
+            Mimo nich preto rátame prímestský autobus za jednotlivé cestovné, a to cenou z čipovej
+            karty: kto ním dochádza, kartu má, a v hotovosti je každý lístok o 0,50 € drahší. Podľa
+            tarify Košického samosprávneho kraja stojí cesta na 18 až 20 km 1,60 €, teda 0,084 €/km,
+            na 26 až 30 km 2,00 €, teda 0,071 €/km. Ako východisko berieme 0,08 €/km, deti a
+            študenti do 26 rokov platia presne polovicu. Prímestský autobus má vyššiu stopu na osobokilometer než
+            mestský, lebo jazdí menej obsadený — Umweltbundesamt mu pri 20 % obsadenosti a vrátane
+            výroby vozidla ráta 69,6 g CO₂e.
+          </p>
+          <p>
+            <b>Čo mimo mesta nahradiť nejde.</b> Kalkulačka neráta s tým, že spoj musí ísť vtedy,
+            keď potrebuješ. Ak ti prímestský autobus alebo vlak nepokryjú všetky kilometre, nechaj
+            pokrytie pod 100 % — porovnanie potom hovorí o tej časti ciest, ktorú nahradiť vieš, a
+            zvyšok ostáva autu.
           </p>
           <p>
             <b>Čo nezapočítavame.</b> Výrobu vozidiel a infraštruktúry (na strane auta by to pridalo

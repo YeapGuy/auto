@@ -37,6 +37,21 @@ export function IconTrain(props) {
   )
 }
 
+// Prímestský autobus. Od mestského ho odlišuje otvorená cesta pod kolesami,
+// od diaľkového to, že je to stále linkový autobus so zastávkami.
+export function IconRegBus(props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3.2" y="2.8" width="13.6" height="9.8" rx="2" />
+      <path d="M3.2 6.8h13.6" />
+      <path d="M6.4 12.6v1.5M13.6 12.6v1.5" />
+      <circle cx="6.4" cy="10" r="0.7" fill="currentColor" stroke="none" />
+      <circle cx="13.6" cy="10" r="0.7" fill="currentColor" stroke="none" />
+      <path d="M2 16.6h4.4M8.8 16.6h2.4M13.6 16.6H18" />
+    </svg>
+  )
+}
+
 export function IconCoach(props) {
   return (
     <svg {...base} {...props}>
