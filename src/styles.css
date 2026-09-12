@@ -1,0 +1,1346 @@
+:root {
+  /* Zelená nesie značku, tehlová je dátová farba auta a jeho nákladov. */
+  --ink: #16241d;
+  --ink-2: #4c5a52;
+  --ink-3: #586a5f;
+  --paper: #f4f5f0;
+  --paper-2: #eceee6;
+  --card: #ffffff;
+  --rule: #d5ddd2;
+  --rule-2: #e6eae1;
+  --green: #1f6b47;
+  --green-deep: #10352a;
+  --green-tint: #e4ede5;
+  --cost: #b04a22;
+  --cost-tint: #f6ece5;
+  --amber: #8f6b12;
+
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --serif: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+a {
+  color: var(--green);
+  text-underline-offset: 3px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Verzálky sa na stránke píšu výlučne mono popiskom. */
+.label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.wrap {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding-inline: 28px;
+}
+
+/* ---------------------------------------------------------------- hero */
+.hero {
+  background: var(--green-tint);
+  border-bottom: 1px solid var(--rule);
+  padding-block: 76px 56px;
+}
+
+.hero .label {
+  color: var(--green);
+  display: block;
+  margin-bottom: 26px;
+}
+
+.hero h1 {
+  font-size: clamp(40px, 6.4vw, 74px);
+  max-width: 15ch;
+  letter-spacing: -0.022em;
+}
+
+.hero h1 em {
+  font-style: italic;
+}
+
+.lede {
+  margin: 26px 0 0;
+  font-size: clamp(16.5px, 1.6vw, 19px);
+  color: var(--ink-2);
+  max-width: 54ch;
+}
+
+.herofacts {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 42px;
+  border-top: 1px solid var(--rule);
+}
+
+.herofacts div {
+  padding: 16px 28px 0 0;
+  margin-right: 28px;
+  border-right: 1px solid var(--rule);
+}
+
+.herofacts div:last-child {
+  border-right: none;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.herofacts b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Len priamy popisok pod číslom, nie span-y vnútri bubliny s vysvetlením. */
+.herofacts div > span {
+  font-size: 13px;
+  color: var(--ink-2);
+  display: block;
+  max-width: 30ch;
+}
+
+.herofacts div {
+  position: relative;
+}
+
+/* Otáznik s vysvetlením. Bublinu kotvíme o celý blok faktu, nie o samotný
+   otáznik, aby sa na úzkom displeji nevysunula mimo obrazovky. */
+.explain {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  margin-left: 8px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink-3);
+  cursor: help;
+  vertical-align: 2px;
+  user-select: none;
+}
+
+.explain:hover,
+.explain:focus-visible {
+  border-color: var(--green);
+  color: var(--green);
+  outline: none;
+}
+
+.tip {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  width: max(100%, 300px);
+  max-width: 86vw;
+  background: var(--ink);
+  color: #fff;
+  padding: 13px 15px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  font-variant-numeric: normal;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s ease, visibility 0.12s;
+  z-index: 5;
+}
+
+.explain:hover .tip,
+.explain:focus .tip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tip > b {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.tip > span {
+  display: block;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.tip > span + span {
+  margin-top: 6px;
+}
+
+.herofacts-note {
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+/* -------------------------------------------------------------- sekcie */
+.section {
+  padding-block: 64px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-head {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 24px;
+  margin-bottom: 34px;
+}
+
+.section-head .idx {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  padding-top: 8px;
+}
+
+.section-head h2 {
+  font-size: clamp(25px, 3.1vw, 35px);
+  max-width: 20ch;
+}
+
+.section-head p {
+  margin: 12px 0 0;
+  color: var(--ink-2);
+  max-width: 60ch;
+  font-size: 15.5px;
+}
+
+.body-col {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 24px;
+}
+
+.body-col > * {
+  grid-column: 2;
+}
+
+/* ------------------------------------------------------ karty profilov */
+.profiles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+
+.profile {
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 18px 18px 20px;
+  transition: background 0.12s ease;
+  display: block;
+}
+
+.profile:hover {
+  background: var(--card);
+}
+
+.profile[aria-pressed='true'] {
+  background: var(--card);
+  box-shadow: inset 3px 0 0 var(--green);
+}
+
+.profile .idx {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
+}
+
+.profile strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.profile .tag {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+.profile .price {
+  display: block;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule-2);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--cost);
+}
+
+/* ------------------------------------------------------ rýchle ovládanie */
+.quick {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 26px 34px;
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid var(--rule);
+}
+
+.slider label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.slider label > span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.slider label b {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+input[type='range'] {
+  width: 100%;
+  accent-color: var(--green);
+  height: 20px;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ------------------------------------------------------------ výsledok */
+.headline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--rule);
+  background: var(--card);
+}
+
+.bigcard {
+  padding: 30px;
+  border-right: 1px solid var(--rule);
+}
+
+.bigcard .label {
+  display: block;
+}
+
+.bignum {
+  font-family: var(--serif);
+  font-size: clamp(50px, 7.6vw, 80px);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--cost);
+  margin: 12px 0 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.bignum small {
+  font-family: var(--mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+  margin-left: 10px;
+  letter-spacing: 0.12em;
+}
+
+.subnums {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 26px;
+  border-top: 1px solid var(--rule);
+}
+
+.subnum {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
+
+.subnum:nth-child(odd) {
+  border-right: 1px solid var(--rule-2);
+  padding-right: 16px;
+}
+
+.subnum:nth-child(even) {
+  padding-left: 16px;
+}
+
+.subnum:nth-last-child(-n + 2) {
+  border-bottom: none;
+}
+
+.subnum b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.subnum span {
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+.shock {
+  margin-top: 26px;
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.shock div {
+  background: var(--cost-tint);
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 18px;
+  align-items: baseline;
+}
+
+.shock b {
+  font-family: var(--mono);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--cost);
+  font-variant-numeric: tabular-nums;
+}
+
+.shock span {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+/* -------------------------------------------------------------- rozpad */
+.breakdown {
+  padding: 30px;
+}
+
+.breakdown h3,
+.vsrow h3,
+.modescale h3 {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 18px;
+}
+
+.stackbar {
+  display: flex;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  background: var(--rule-2);
+}
+
+.stackbar i {
+  display: block;
+  height: 100%;
+}
+
+.legend {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li {
+  display: grid;
+  grid-template-columns: 10px 1fr auto 46px;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 14.5px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
+
+.legend li:last-child {
+  border-bottom: none;
+}
+
+.legend .dot {
+  width: 8px;
+  height: 8px;
+  align-self: center;
+}
+
+.legend .val {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.legend .pct {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  text-align: right;
+}
+
+/* -------------------------------------------------------------- emisie */
+.ecocards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.ecocard {
+  background: var(--card);
+  padding: 20px;
+}
+
+.ecocard b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+
+.ecocard span {
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.45;
+  display: block;
+  margin-top: 4px;
+}
+
+.modescale {
+  margin-top: 34px;
+}
+
+.modescale .row {
+  display: grid;
+  grid-template-columns: 150px 1fr 70px;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
+
+.modescale .track {
+  height: 12px;
+}
+
+.modescale .fill {
+  height: 100%;
+}
+
+.modescale .qty {
+  text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  font-size: 12.5px;
+}
+
+/* --------------------------------------------------------- alternatíva */
+.altgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  align-items: start;
+}
+
+.panel {
+  padding: 26px;
+  border-right: 1px solid var(--rule);
+}
+
+/* Počet cestujúcich. */
+.people {
+  padding-bottom: 18px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.people > .label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.peoplefields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 10px 20px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.steps {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--rule);
+}
+
+.steps button {
+  width: 30px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1;
+  padding: 6px 0;
+}
+
+.steps button:hover:not(:disabled) {
+  background: var(--green);
+  color: #fff;
+}
+
+.steps button:disabled {
+  color: var(--rule);
+  cursor: not-allowed;
+}
+
+.steps b {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  border-inline: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mode {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
+
+.mode:last-of-type {
+  border-bottom: none;
+}
+
+.mode .ico {
+  color: var(--ink-3);
+  padding-top: 2px;
+}
+
+.mode .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mode .name {
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.mode .qty {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.mode input[type='range'] {
+  accent-color: var(--green);
+  margin-top: 6px;
+}
+
+.checkline {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-top: 6px;
+}
+
+.checkline input {
+  accent-color: var(--green);
+  margin-right: 4px;
+}
+
+.coverage {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--ink-2);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.coverage.warn {
+  color: var(--amber);
+}
+
+.coverage button {
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink-2);
+  padding: 5px 11px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.coverage button:hover {
+  border-color: var(--ink-2);
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------- porovnanie */
+.versus {
+  padding: 26px;
+}
+
+.vsrow {
+  margin-bottom: 26px;
+}
+
+.vsrow:last-child {
+  margin-bottom: 0;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 74px) 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.bar .lbl {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.bar .track {
+  background: var(--rule-2);
+  height: 28px;
+}
+
+.bar .fill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 10px;
+  color: #fff;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+  min-width: fit-content;
+  transition: width 0.3s ease;
+  white-space: nowrap;
+}
+
+.bar .fill.car {
+  background: var(--cost);
+}
+
+.bar .fill.alt {
+  background: var(--green);
+}
+
+/* ------------------------------------------------------------- verdikt */
+.verdict {
+  background: var(--green-deep);
+  color: #fff;
+  padding: 34px;
+  border: 1px solid var(--green-deep);
+  border-top: 0;
+}
+
+.verdict .label {
+  color: rgba(255, 255, 255, 0.6);
+  display: block;
+}
+
+.verdict .big {
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 62px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 10px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.verdict p {
+  margin: 16px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  max-width: 62ch;
+}
+
+.verdict p b {
+  color: #fff;
+}
+
+.verdict .split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+  gap: 22px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.verdict .split b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 21px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.verdict .split span {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Čas za volantom. Nie je to úspora v eurách ani v kilogramoch, preto stojí
+   vo vlastnej karte a nie medzi číslami verdiktu. */
+.timecard {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 0;
+  padding: 26px 30px 28px;
+}
+
+.timecard h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+
+.timecard > b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 21px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--cost);
+}
+
+.timecard p {
+  margin: 8px 0 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+  max-width: 64ch;
+}
+
+.timecard p b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.timecard > span {
+  display: block;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule-2);
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--ink-3);
+  max-width: 64ch;
+}
+
+/* Číslo upraviteľné priamo vo vete. Podklad a linka pod ním sú jediné, čo
+   prezradí, že sa doň dá klikať, tak musia byť jasne viditeľné. */
+.inlinenum {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.inlinenum input {
+  width: 3.6em;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--paper);
+  border: 0;
+  border-bottom: 1px solid var(--green);
+  padding: 3px 4px;
+  text-align: center;
+}
+
+.inlinenum input:hover {
+  background: var(--green-tint);
+}
+
+.inlinenum input:focus {
+  outline: 1px solid var(--green);
+  background: var(--card);
+}
+
+.inlinenum input::-webkit-outer-spin-button,
+.inlinenum input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inlinenum input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.inlinenum > span {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.verdict .slider {
+  margin-top: 26px;
+  max-width: 340px;
+}
+
+.verdict .slider label > span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.verdict .slider label b {
+  color: #fff;
+}
+
+.verdict input[type='range'] {
+  accent-color: #fff;
+}
+
+/* ----------------------------------------------------------- pokročilé */
+.advwrap {
+  margin-top: 30px;
+  border-top: 1px solid var(--rule);
+}
+
+details.adv {
+  border-bottom: 1px solid var(--rule);
+}
+
+details.adv > summary {
+  cursor: pointer;
+  padding: 15px 2px;
+  font-size: 15px;
+  font-weight: 500;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+}
+
+details.adv > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.adv > summary::after {
+  content: '+';
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--ink-3);
+  line-height: 1;
+}
+
+details.adv[open] > summary::after {
+  content: '–';
+}
+
+details.adv > summary small {
+  font-weight: 400;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 18px 24px;
+  padding: 6px 2px 26px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-2);
+  margin-bottom: 6px;
+}
+
+.field .inputwrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--rule);
+  background: var(--card);
+}
+
+.field .inputwrap:focus-within {
+  border-color: var(--green);
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border: 0;
+  padding: 9px 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  background: transparent;
+  outline: none;
+  color: var(--ink);
+}
+
+.field select {
+  font-family: var(--sans);
+}
+
+.field .suffix {
+  padding: 0 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.field .note {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 5px;
+  line-height: 1.45;
+}
+
+/* -------------------------------------------------------------- zdroje */
+.sources {
+  background: var(--paper-2);
+  padding-block: 60px 70px;
+}
+
+.sources h2 {
+  font-size: 28px;
+}
+
+.sources > .wrap > p {
+  color: var(--ink-2);
+  max-width: 60ch;
+  font-size: 15px;
+}
+
+.sources ul {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  border-top: 1px solid var(--rule);
+}
+
+.sources li {
+  padding: 14px 24px 14px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sources li a {
+  font-weight: 500;
+  font-size: 14.5px;
+  text-decoration: none;
+}
+
+.sources li a:hover {
+  text-decoration: underline;
+}
+
+.sources li p {
+  margin: 4px 0 0;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.method {
+  margin-top: 44px;
+  color: var(--ink-2);
+  font-size: 14px;
+  max-width: 68ch;
+}
+
+.method h3 {
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.method p {
+  margin: 0 0 12px;
+}
+
+.method b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------- zdieľanie */
+/* Zelený pás na konci uzatvára stránku rovnakou farbou, akou sa otvára hero. */
+.share {
+  background: var(--green-tint);
+  border-bottom: 1px solid var(--rule);
+  padding-block: 60px 64px;
+}
+
+.share h2 {
+  font-size: clamp(27px, 3.4vw, 38px);
+}
+
+.share > .wrap > p {
+  margin: 14px 0 0;
+  color: var(--ink-2);
+  max-width: 52ch;
+  font-size: 16px;
+}
+
+/* Prepínač, či odkaz nesie aj konkrétny výpočet. */
+.sharemode {
+  display: inline-flex;
+  margin-top: 26px;
+  border: 1px solid var(--green);
+}
+
+.sharemode button {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+}
+
+.sharemode button + button {
+  border-left: 1px solid var(--green);
+}
+
+.sharemode button[aria-pressed='true'] {
+  background: var(--green);
+  color: #fff;
+}
+
+.sharebtns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sharebtns button,
+.sharebtns a {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  border: 1px solid var(--green);
+  color: var(--green);
+  background: transparent;
+  text-decoration: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.sharebtns button:hover,
+.sharebtns a:hover {
+  background: var(--green);
+  color: #fff;
+}
+
+.sharebtns .primary {
+  background: var(--green);
+  color: #fff;
+}
+
+.sharebtns .primary:hover {
+  background: var(--green-deep);
+  border-color: var(--green-deep);
+}
+
+.sharenote {
+  margin: 20px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  max-width: 56ch;
+}
+
+footer.site {
+  padding-block: 26px 46px;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+/* ----------------------------------------------------------- responzív */
+@media (max-width: 980px) {
+  .headline,
+  .altgrid {
+    grid-template-columns: 1fr;
+  }
+  .bigcard,
+  .panel {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+}
+
+@media (max-width: 1040px) {
+  .profiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .profile:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .wrap {
+    padding-inline: 18px;
+  }
+  .section {
+    padding-block: 44px;
+  }
+  .hero {
+    padding-block: 52px 40px;
+  }
+  .section-head,
+  .body-col {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .body-col > * {
+    grid-column: 1;
+  }
+  .section-head .idx {
+    padding-top: 0;
+    margin-bottom: 10px;
+  }
+  .profiles {
+    grid-template-columns: 1fr;
+  }
+  .profile:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+  .bigcard,
+  .breakdown,
+  .panel,
+  .versus {
+    padding: 22px;
+  }
+  .verdict {
+    padding: 24px;
+  }
+  .timecard {
+    padding: 22px;
+  }
+  .shock div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .modescale .row {
+    grid-template-columns: 112px 1fr 62px;
+    font-size: 13px;
+  }
+  .herofacts div {
+    border-right: none;
+    padding-right: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+}

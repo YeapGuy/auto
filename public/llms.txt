@@ -1,0 +1,9 @@
+# Koľko ťa naozaj stojí auto?
+
+> Kalkulačka skutočných nákladov vlastnenia auta na Slovensku — nákup, strata hodnoty, poistky,
+> palivo, servis a parkovanie — spolu s uhlíkovou stopou. Porovnáva to s MHD, vlakom, diaľkovým
+> autobusom, bicyklom a Boltom na základe reálnych slovenských cenníkov.
+
+- [Aplikácia](/): interaktívna kalkulačka nákladov a emisií auta.
+- [Zdroje a metodika](/#vysledok): zoznam vstupných cien a spôsob výpočtu sú vypísané priamo na
+  stránke v sekcii „Odkiaľ sú čísla“ na jej konci.
