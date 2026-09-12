@@ -138,7 +138,7 @@ export default function App() {
     <>
       <header className="hero">
         <div className="wrap">
-          <span className="label"></span>
+          {/* <span className="label"></span> */}
           <h1>
             Koľko ťa <em>naozaj</em> stojí auto?
           </h1>
@@ -179,9 +179,9 @@ export default function App() {
               <span>nižšia uhlíková stopa ak nevlastníš palivové auto</span>
             </div>
           </div>
-          <p className="herofacts-note">
+          {/* <p className="herofacts-note">
             
-          </p>
+          </p> */}
         </div>
       </header>
 
@@ -192,9 +192,9 @@ export default function App() {
           <div className="section-head">
             <span className="idx">01</span>
             <div>
-              <h2>Aké auto máš</h2>
+              <h2>Aké auto?</h2>
               <p>
-                Vyber si najbližší profil a ak chceš, dolaď si ho.
+                Vyber si najbližší profil a ak chceš, uprav ho.
               </p>
             </div>
           </div>
@@ -681,9 +681,9 @@ export default function App() {
 
             <div className="timecard">
               <h3>Navyše…</h3>
-              <b>{fmtNum(hoursDriving, 0)} hodín ročne</b>
+              <b>aj {fmtNum(hoursDriving, 0)} hodín ročne</b>
               <p>
-                stráviš za volantom, čo je <b>{fmtNum(hoursDriving / 8, 0)} osemhodinových dní</b>. V aute
+                strávi za volantom šofér tohto auta. To je <b>{fmtNum(hoursDriving / 8, 0)} osemhodinových dní</b>. V aute
                 je to čas, ktorý ti z roka jednoducho zmizne: musíš sledovať cestu. Vo vlaku alebo v
                 autobuse sa dá tie isté hodiny čítať, pracovať, dospávať alebo len pozerať von
                 oknom. Peniaze si zarobíš späť, čas nie.
