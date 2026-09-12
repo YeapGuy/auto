@@ -15,6 +15,7 @@
   --cost-tint: #f6ece5;
   --amber: #8f6b12;
 
+  --hand: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
   --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
   --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --serif: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
@@ -87,10 +88,50 @@ button {
   font-size: clamp(40px, 6.4vw, 74px);
   max-width: 15ch;
   letter-spacing: -0.022em;
+  /* Riadkovanie je voľnejšie, aby sa dopísaná vsuvka mala kam vtisnúť. */
+  line-height: 1.5;
 }
 
 .hero h1 em {
   font-style: italic;
+}
+
+/* Ručne dopísané slová visia pod riadkom a korektorská vsuvka ukazuje, kam patria. */
+.inkline {
+  position: relative;
+  display: inline-block;
+  width: 0;
+  vertical-align: baseline;
+  color: var(--green);
+}
+
+.inkline-mark {
+  position: absolute;
+  left: 50%;
+  top: -0.23em;
+  width: 0.4em;
+  transform: translateX(-46%) rotate(-5deg);
+  opacity: 0.9;
+}
+
+.inkline-mark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.inkline-word {
+  position: absolute;
+  left: 50%;
+  top: 0.26em;
+  transform: translateX(-52%) rotate(-4.5deg);
+  font-family: var(--hand);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.46em;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
 }
 
 .lede {
