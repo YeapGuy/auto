@@ -723,6 +723,10 @@ export default function App() {
       <footer className="site">
         <div className="wrap">
           Orientačný prepočet, nie finančné poradenstvo. Ceny sa menia, tak si ich pokojne prepíš.
+          {' '}·{' '}
+          <a href="https://github.com/YeapGuy/auto" target="_blank" rel="noopener noreferrer">
+            zdrojový kód
+          </a>
         </div>
       </footer>
     </>
