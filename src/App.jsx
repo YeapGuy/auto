@@ -192,7 +192,18 @@ export default function App() {
         <div className="wrap">
           {/* <span className="label"></span> */}
           <h1>
-            Koľko ťa <em>naozaj</em> stojí auto?
+            Koľko ťa{' '}
+            {/* Dopísaná vsuvka: v riadku nezaberá miesto, vtisne sa pod medzeru. */}
+            <span className="inkline">
+              <span className="inkline-mark" aria-hidden="true">
+                <svg viewBox="0 0 48 36" aria-hidden="true">
+                  {/* Jeden ťah pera: tenký nábeh, hrubší stred, odtrhnutý koniec. */}
+                  <path d="M4.3 33.4C5.2 32.0 8.2 27.9 10.0 25.2C11.8 22.5 13.6 19.7 15.1 17.2C16.5 14.7 17.9 11.8 18.7 10.0C19.6 8.1 19.7 6.0 20.3 6.0C20.9 6.1 21.4 8.3 22.5 10.3C23.5 12.3 25.2 15.6 26.8 18.1C28.5 20.6 30.5 23.2 32.5 25.3C34.5 27.5 36.7 29.6 38.6 30.9C40.5 32.2 42.8 32.7 43.7 33.1L43.9 32.7C43.2 32.2 41.3 31.0 39.8 29.5C38.3 27.9 36.4 25.7 34.7 23.5C33.0 21.3 31.2 18.7 29.6 16.3C27.9 13.8 26.3 11.0 24.7 8.9C23.2 6.8 21.9 3.8 20.5 3.8C19.0 3.7 17.5 6.4 16.1 8.4C14.7 10.4 13.5 13.0 12.1 15.6C10.8 18.2 9.4 21.1 8.0 24.0C6.6 26.9 4.4 31.5 3.7 33.0Z" fill="currentColor" />
+                </svg>
+              </span>
+              <span className="inkline-word">a prírodu</span>
+            </span>{' '}
+            <em>naozaj</em> stojí auto?
           </h1>
           <p className="lede">
             Väčšina vodičov si počíta tankovanie. Skutočná cena je ale hlavne strata hodnoty, k tomu
