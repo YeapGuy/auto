@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import {
   AREAS,
   CITIES,
+  DEFAULT_CITY,
   CO2_MODES,
   DEFAULT_CONSUMPTION,
   FUELS,
@@ -106,7 +107,6 @@ export default function App() {
     // Profily sú poskladané pre mesto. Kto si prepol vidiek, tomu necháme jeho
     // vidiecku alternatívu tak, ako si ju nastavil — výber auta ju nemá prepisovať.
     if (area !== 'rural') setAlloc({ ...p.alloc })
-    setCity(p.city)
     setBikeType(p.bikeType)
   }
 
@@ -158,7 +158,7 @@ export default function App() {
     const rows = PROFILES.map((p) => {
       const c = computeCar(p.car)
       const a = computeAlt(p.car.kmYear, p.alloc, {
-        city: p.city,
+        city: DEFAULT_CITY,
         bikeType: p.bikeType,
         car2PerKm: marginalPerKm(p.car),
         car2Co2PerKm: carCo2PerKm(p.car),

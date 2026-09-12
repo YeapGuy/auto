@@ -1,4 +1,4 @@
-import { ALT_PRICES, CITIES, FUELS, PROFILES } from './data.js'
+import { ALT_PRICES, CITIES, DEFAULT_CITY, FUELS, PROFILES } from './data.js'
 import { toArea } from './calc.js'
 
 // Stav kalkulačky vieme zabaliť do adresy, aby sa dal poslať aj s výpočtom.
@@ -53,7 +53,7 @@ export function defaultState() {
     car: { ...BASE.car },
     alloc: { ...BASE.alloc },
     area: 'city',
-    city: BASE.city,
+    city: DEFAULT_CITY,
     bikeType: BASE.bikeType,
     prices: { ...ALT_PRICES },
     horizon: DEFAULT_HORIZON,
@@ -70,7 +70,7 @@ export function encodeState(state) {
   if (Object.keys(car).length) payload.c = car
   if (Object.keys(alloc).length) payload.a = alloc
   if (Object.keys(prices).length) payload.r = prices
-  if (state.city !== profile.city) payload.t = state.city
+  if (state.city !== DEFAULT_CITY) payload.t = state.city
   if (state.area === 'rural') payload.g = state.area
   if (state.bikeType !== profile.bikeType) payload.b = state.bikeType
   if (state.horizon !== DEFAULT_HORIZON) payload.h = state.horizon
@@ -96,7 +96,7 @@ export function decodeState(token) {
 
   const area = payload.g === 'rural' ? 'rural' : 'city'
   const bikeType = payload.b === 'ebike' || payload.b === 'bike' ? payload.b : profile.bikeType
-  const city = CITIES.some((c) => c.id === payload.t) ? payload.t : profile.city
+  const city = CITIES.some((c) => c.id === payload.t) ? payload.t : DEFAULT_CITY
   const horizon = Number.isFinite(Number(payload.h))
     ? Math.max(1, Math.min(30, Math.round(Number(payload.h))))
     : DEFAULT_HORIZON

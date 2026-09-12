@@ -205,6 +205,10 @@ export const BOLT_DEADHEAD = 1.3
 // --- Mestá a predplatné lístky MHD ----------------------------------------
 // yearChild je zľavnený ročný lístok pre deti a študentov. Kde ho dopravca
 // nezverejňuje na celý rok, odvodzujeme ho z pomeru kratších lístkov.
+// Predvolené mesto. Nie je naviazané na profil auta — aké auto niekto jazdí
+// nehovorí nič o tom, kde býva, a výber profilu mu preto mesto nemá prepisovať.
+export const DEFAULT_CITY = 'ba'
+
 export const CITIES = [
   { id: 'ba', label: 'Bratislava — IDS BK, zóny 100+101', year: 263, yearChild: 131.5, src: 'idsbk' },
   { id: 'ke', label: 'Košice — DPMK', year: 240, yearChild: 120, src: 'dpmk' },
@@ -278,7 +282,6 @@ export const PROFILES = [
     id: 'city',
     name: 'Malé mestské auto',
     tagline: 'Ojazdená Fabia, jazda hlavne po meste',
-    city: 'ba',
     bikeType: 'bike',
     alloc: { car2: 0, mhd: 0.62, regbus: 0, train: 0.15, coach: 0.03, bike: 0.19, bolt: 0.01 },
     car: {
@@ -303,7 +306,6 @@ export const PROFILES = [
     id: 'family',
     name: 'Rodinné kombi',
     tagline: 'Dieselová Octavia, denné dochádzanie do práce',
-    city: 'ke',
     bikeType: 'bike',
     alloc: { car2: 0, mhd: 0.4, regbus: 0, train: 0.37, coach: 0.1, bike: 0.12, bolt: 0.01 },
     car: {
@@ -328,7 +330,6 @@ export const PROFILES = [
     id: 'suv',
     name: 'Nové SUV',
     tagline: 'Nové auto z autosalónu, jazda po meste aj diaľnici',
-    city: 'ba',
     bikeType: 'bike',
     alloc: { car2: 0, mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
     car: {
@@ -353,7 +354,6 @@ export const PROFILES = [
     id: 'ev',
     name: 'Elektromobil',
     tagline: 'Nový elektromobil, 80 % nabíjania doma',
-    city: 'ba',
     bikeType: 'ebike',
     alloc: { car2: 0, mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
     car: {
@@ -378,7 +378,6 @@ export const PROFILES = [
     id: 'cheapest',
     name: 'Najlacnejšie možné auto',
     tagline: 'Dvadsaťročná jazdenka, jazdí sa len keď treba',
-    city: 'po',
     bikeType: 'bike',
     alloc: { car2: 0, mhd: 0.57, regbus: 0, train: 0.2, coach: 0.05, bike: 0.17, bolt: 0.01 },
     car: {
