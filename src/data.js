@@ -231,10 +231,15 @@ export const AREAS = {
     id: 'rural',
     label: 'Mimo mesta',
     hint: 'dedina alebo malé mesto bez MHD',
+    // Predvoľba pre život mimo mesta. Nevyzerá ako mestská a ani nemá —
+    // ťažisko nesie druhé auto v domácnosti, autobus dopĺňa, vlak je na
+    // cesty do krajského mesta. Súčet je 100 % ročných kilometrov.
+    alloc: { car2: 0.55, regbus: 0.2, train: 0.1, coach: 0.03, bike: 0.12, bolt: 0, mhd: 0 },
     note:
       'Mimo miest MHD spravidla nie je, preto tu namiesto predplatného rátame prímestský autobus ' +
       '(SAD, Arriva) a vlak za jednotlivé cestovné. A povedzme rovno aj to druhé: pri pár spojoch ' +
-      'denne auto nahradiť úplne nejde.',
+      'denne auto nahradiť úplne nejde. Preto tu väčšinu kilometrov nesie iné auto v domácnosti — ' +
+      'toto porovnanie nehovorí „ži bez auta“, ale „zruš druhé auto“.',
   },
 }
 
@@ -249,6 +254,10 @@ export const ALT_PRICES = {
   // o 0,50 € drahší. Dochádzanie na 18–20 km stojí 1,60 € (0,084 €/km),
   // na 26–30 km 2,00 € (0,071 €/km). Ako východisko berieme stred.
   regbusPerKm: 0.08,
+  // Iné auto v domácnosti sa normálne odvodzuje z parametrov auta vyššie —
+  // toto je len záloha, keby ich volajúci neposlal.
+  car2PerKm: 0.17,
+  car2Co2PerKm: 180, // g CO₂e na km
   coachPerKm: 0.05, // FlixBus/RegioJet BA–KE ≈ 22 € / 445 km
   boltTripAvg: 7.0, // priemerná mestská jazda (4–5 km) podľa cenníkových príkladov
   boltTripKm: 5,
@@ -271,7 +280,7 @@ export const PROFILES = [
     tagline: 'Ojazdená Fabia, jazda hlavne po meste',
     city: 'ba',
     bikeType: 'bike',
-    alloc: { mhd: 0.62, regbus: 0, train: 0.15, coach: 0.03, bike: 0.19, bolt: 0.01 },
+    alloc: { car2: 0, mhd: 0.62, regbus: 0, train: 0.15, coach: 0.03, bike: 0.19, bolt: 0.01 },
     car: {
       price: 9000,
       years: 6,
@@ -296,7 +305,7 @@ export const PROFILES = [
     tagline: 'Dieselová Octavia, denné dochádzanie do práce',
     city: 'ke',
     bikeType: 'bike',
-    alloc: { mhd: 0.4, regbus: 0, train: 0.37, coach: 0.1, bike: 0.12, bolt: 0.01 },
+    alloc: { car2: 0, mhd: 0.4, regbus: 0, train: 0.37, coach: 0.1, bike: 0.12, bolt: 0.01 },
     car: {
       price: 15000,
       years: 7,
@@ -321,7 +330,7 @@ export const PROFILES = [
     tagline: 'Nové auto z autosalónu, jazda po meste aj diaľnici',
     city: 'ba',
     bikeType: 'bike',
-    alloc: { mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
+    alloc: { car2: 0, mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
     car: {
       price: 35000,
       years: 8,
@@ -346,7 +355,7 @@ export const PROFILES = [
     tagline: 'Nový elektromobil, 80 % nabíjania doma',
     city: 'ba',
     bikeType: 'ebike',
-    alloc: { mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
+    alloc: { car2: 0, mhd: 0.47, regbus: 0, train: 0.32, coach: 0.06, bike: 0.14, bolt: 0.01 },
     car: {
       price: 38000,
       years: 8,
@@ -371,7 +380,7 @@ export const PROFILES = [
     tagline: 'Dvadsaťročná jazdenka, jazdí sa len keď treba',
     city: 'po',
     bikeType: 'bike',
-    alloc: { mhd: 0.57, regbus: 0, train: 0.2, coach: 0.05, bike: 0.17, bolt: 0.01 },
+    alloc: { car2: 0, mhd: 0.57, regbus: 0, train: 0.2, coach: 0.05, bike: 0.17, bolt: 0.01 },
     car: {
       price: 1200,
       years: 5,

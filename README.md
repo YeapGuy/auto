@@ -64,11 +64,17 @@ npm run build
   polovičné predplatné (IDS BK 131,50 €) a vo vlaku po registrácii cestujú zadarmo. Emisie auta sa
   medzi cestujúcich delia, takže plne obsadené auto vie prekonať aj mestskú MHD — kalkulačka to
   povie nahlas.
+- **Iné auto v domácnosti:** kilometre, ktoré po zrušení auta odjazdí druhé auto v domácnosti,
+  sa rátajú hraničnou cenou — palivo plus servis a pneumatiky na kilometer (`marginalPerKm`).
+  Fixné položky sa pri druhom aute neplatia druhý raz a práve v tom je úspora. Emisie sú rovnaké
+  ako pri vlastnom aute, takže tento presun nešetrí ani gram CO₂ a kalkulačka to hovorí nahlas.
 - **Mesto a vidiek:** prepínač nad staviteľom alternatívy mení, čo sa vôbec dá zvoliť. V meste
   je to predplatný lístok MHD, mimo neho prímestský autobus za jednotlivé cestovné. Podiely
   kilometrov sa pri prepnutí neresetujú, len sa presunú na dopravu, ktorá v danom prostredí
-  existuje (`toArea` v `calc.js`). Mimo mesta kalkulačka otvorene hovorí, že pri pár spojoch denne
-  auto nahradiť úplne nejde a že reálnym výsledkom býva zrušiť druhé auto, nie to prvé.
+  existuje. Vidiecka predvoľba nie je mestská s inými názvami: väčšinu kilometrov nesie iné auto
+  v domácnosti (55 %), autobus dopĺňa (20 %), vlak je na cesty do krajského mesta (10 %). Mimo
+  mesta teda kalkulačka nehovorí „ži bez auta“, ale „zruš druhé auto“ — a rovno priznáva, že pri
+  pár spojoch denne sa auto nahradiť úplne nedá.
 - **Nezapočítané:** výroba vozidiel a infraštruktúry, úroky z úveru, pokuty, škody pri nehodách,
   čas v zápche, pri LPG ani prestavba a revízia tlakovej nádrže. Kalkulačka teda skôr podhodnocuje.
 

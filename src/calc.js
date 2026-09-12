@@ -50,9 +50,27 @@ export function computeCar(car) {
   }
 }
 
+/**
+ * Koľko stojí jeden kilometer navyše v aute, ktoré v domácnosti aj tak ostáva.
+ * Fixné položky (PZP, známka, STK, parkovanie, strata hodnoty) sú zaplatené
+ * bez ohľadu na to, či ním niekto pôjde, preto do hraničnej ceny nepatria.
+ * Ostáva palivo a opotrebenie, ktoré s kilometrami naozaj rastie.
+ */
+export function marginalPerKm(car) {
+  const fuelPerKm = (car.consumption / 100) * car.fuelPrice
+  const wearPerKm = car.kmYear > 0 ? (car.service + car.tyres) / car.kmYear : 0
+  return fuelPerKm + wearPerKm
+}
+
+/** Emisie auta na kilometer v gramoch CO₂e, bez ohľadu na počet cestujúcich. */
+export function carCo2PerKm(car) {
+  return (car.consumption / 100) * FUELS[car.fuel].co2 * 1000
+}
+
 /** Rozdelenie ročných kilometrov medzi alternatívne spôsoby dopravy. */
 export function splitKm(kmYear, alloc) {
   return {
+    car2: kmYear * (alloc.car2 || 0),
     mhd: kmYear * (alloc.mhd || 0),
     regbus: kmYear * (alloc.regbus || 0),
     train: kmYear * (alloc.train || 0),
@@ -88,7 +106,21 @@ export function computeAlt(kmYear, alloc, opts) {
   const boltTrips = prices.boltTripKm > 0 ? km.bolt / prices.boltTripKm : 0
   const taxiCo2PerKm = (TAXI_CONSUMPTION / 100) * FUELS.petrol.co2 * 1000 * BOLT_DEADHEAD // g/km
 
+  const car2PerKm = opts.car2PerKm ?? prices.car2PerKm
+  const car2Co2PerKm = opts.car2Co2PerKm ?? prices.car2Co2PerKm
+
   const items = [
+    {
+      key: 'car2',
+      label: 'Iné auto v domácnosti',
+      // Auto odvezie celú skupinu za jednu cenu, preto sa tu — rovnako ako pri
+      // Bolte — nenásobí počtom ľudí.
+      detail: `${fmtKm(km.car2)} km ročne × ${fmtNum(car2PerKm, 3)} €/km, len palivo a opotrebenie`,
+      value: km.car2 * car2PerKm,
+      co2: (km.car2 * car2Co2PerKm) / 1000,
+      km: km.car2,
+      color: '#9a6b3f',
+    },
     {
       key: 'mhd',
       label: `Predplatný lístok MHD — ${city.label.split(' — ')[0]}`,

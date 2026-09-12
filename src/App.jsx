@@ -18,15 +18,17 @@ import {
   fmtKm,
   fmtNum,
   futureValue,
+  carCo2PerKm,
+  marginalPerKm,
   roundMid,
   roundTo,
   TAXI_CONSUMPTION,
-  toArea,
 } from './calc.js'
 import { Advanced, InlineNum, NumField, SelectField, Slider } from './components/ui.jsx'
 import {
   IconBike,
   IconBus,
+  IconCar,
   IconCoach,
   IconRegBus,
   IconTaxi,
@@ -37,6 +39,7 @@ import { bootState, plainUrl, stateUrl } from './urlState.js'
 // Doprava, ktorú si používateľ skladá. Mestské predplatné a prímestský autobus
 // sa vylučujú — každé patrí do iného prostredia, zvyšok platí v oboch.
 const MODES = [
+  { key: 'car2', Icon: IconCar, name: 'Iné auto v domácnosti' },
   { key: 'mhd', Icon: IconBus, name: 'MHD, predplatný lístok', area: 'city' },
   { key: 'regbus', Icon: IconRegBus, name: 'Prímestský autobus', area: 'rural' },
   { key: 'train', Icon: IconTrain, name: 'Vlak (ZSSK)' },
@@ -45,7 +48,14 @@ const MODES = [
   { key: 'bolt', Icon: IconTaxi, name: 'Bolt alebo taxík' },
 ]
 
-const modesFor = (area) => MODES.filter((m) => !m.area || m.area === area)
+// Mimo mesta nesie iné auto v domácnosti väčšinu kilometrov, preto stojí na
+// čele zoznamu. V meste je to okrajový scenár pre dvojautové domácnosti, tam
+// teda patrí na koniec.
+const modesFor = (area) => {
+  const car2 = MODES.find((m) => m.key === 'car2')
+  const rest = MODES.filter((m) => m.key !== 'car2' && (!m.area || m.area === area))
+  return area === 'rural' ? [car2, ...rest] : [...rest, car2]
+}
 
 const idx = (i) => String(i + 1).padStart(2, '0')
 
@@ -93,16 +103,19 @@ export default function App() {
   function pickProfile(p) {
     setProfileId(p.id)
     setCar({ ...p.car })
-    // Profily sú poskladané pre mesto. Kto si prepol vidiek, nech mu ho výber
-    // auta neprepne späť — alternatívu len preložíme do jeho prostredia.
-    setAlloc(toArea(p.alloc, area))
+    // Profily sú poskladané pre mesto. Kto si prepol vidiek, tomu necháme jeho
+    // vidiecku alternatívu tak, ako si ju nastavil — výber auta ju nemá prepisovať.
+    if (area !== 'rural') setAlloc({ ...p.alloc })
     setCity(p.city)
     setBikeType(p.bikeType)
   }
 
+  // Každé prostredie má inú východiskovú alternatívu, nie inak nazvanú tú istú.
   function pickArea(next) {
+    if (next === area) return
+    const profile = PROFILES.find((p) => p.id === profileId) || PROFILES[0]
     setArea(next)
-    setAlloc((a) => toArea(a, next))
+    setAlloc(next === 'rural' ? { ...AREAS.rural.alloc } : { ...profile.alloc })
   }
 
   const set = (k) => (v) => setCar((c) => ({ ...c, [k]: v }))
@@ -112,9 +125,20 @@ export default function App() {
   // ktorých alternatíva musí odviezť samostatne.
   const heads = Math.max(1, people.adults + people.children)
   const res = useMemo(() => computeCar({ ...car, occupancy: heads }), [car, heads])
+  // Druhé auto v domácnosti počítame ako to isté auto bez fixných nákladov.
+  const car2PerKm = marginalPerKm(car)
+  const car2Co2PerKm = carCo2PerKm(car)
   const alt = useMemo(
-    () => computeAlt(car.kmYear, alloc, { city, bikeType, prices, people }),
-    [car.kmYear, alloc, city, bikeType, prices, people]
+    () =>
+      computeAlt(car.kmYear, alloc, {
+        city,
+        bikeType,
+        prices,
+        people,
+        car2PerKm,
+        car2Co2PerKm,
+      }),
+    [car.kmYear, alloc, city, bikeType, prices, people, car2PerKm, car2Co2PerKm]
   )
   const areaMeta = AREAS[area] || AREAS.city
 
@@ -133,7 +157,12 @@ export default function App() {
   const span = useMemo(() => {
     const rows = PROFILES.map((p) => {
       const c = computeCar(p.car)
-      const a = computeAlt(p.car.kmYear, p.alloc, { city: p.city, bikeType: p.bikeType })
+      const a = computeAlt(p.car.kmYear, p.alloc, {
+        city: p.city,
+        bikeType: p.bikeType,
+        car2PerKm: marginalPerKm(p.car),
+        car2Co2PerKm: carCo2PerKm(p.car),
+      })
       return {
         profile: p,
         car: c,
@@ -543,6 +572,13 @@ export default function App() {
                             setAlloc((a) => ({ ...a, [key]: Number(e.target.value) / 100 }))
                           }
                         />
+                        {key === 'car2' && (
+                          <div className="checkline">
+                            {km > 0
+                              ? 'Tie isté kilometre, to isté palivo — emisie sa tu neznížia ani o gram. Ušetríš to, čo sa za auto platí bez ohľadu na jazdenie: druhé PZP, známku, STK, parkovanie a stratu hodnoty.'
+                              : 'Máte v domácnosti dve autá? Toto je posuvník pre scenár „zrušíme jedno a budeme sa deliť“.'}
+                          </div>
+                        )}
                         {key === 'bolt' && km > 0 && (
                           <div className="checkline">
                             {fmtNum(alt.boltTrips / 12, 1)} jazdy mesačne po{' '}
@@ -1046,6 +1082,16 @@ function Sources() {
             Umweltbundesamt), diaľkový autobus 31 g, prímestský autobus 69,6 g, elektrobicykel 3 g,
             bicykel a chôdza 0 g. Bolt počítame ako auto so 6,8 l/100 km a prirážkou 30 % za jazdy
             naprázdno.
+          </p>
+          <p>
+            <b>Iné auto v domácnosti.</b> Kilometre, ktoré by po zrušení auta odjazdilo druhé auto
+            v domácnosti (alebo ťa odvezie niekto, kto ide rovnako), rátame hraničnou cenou: palivo
+            plus opotrebenie, teda servis a pneumatiky rozpočítané na kilometer. Stratu hodnoty,
+            PZP, diaľničnú známku, STK ani parkovanie sem nepočítame — tie sa pri druhom aute platia
+            tak či tak a práve tým, že sa neplatia druhý raz, vzniká úspora. Emisie sú rovnaké ako
+            pri tvojom aute, na uhlíkovej stope teda tento presun nešetrí nič a kalkulačka to
+            nepredstiera. Vychádzame z parametrov auta z kroku 01; ak je druhé auto v domácnosti
+            menšie alebo väčšie, uprav si spotrebu.
           </p>
           <p>
             <b>Mesto a vidiek.</b> Predplatný lístok MHD sa dá kúpiť len v mestách, ktoré ju majú.
