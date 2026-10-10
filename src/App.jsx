@@ -855,7 +855,7 @@ function CarAdvanced({ car, set, fuelMeta }) {
         />
       </Advanced>
 
-      <Advanced title="Palivo alebo energia" hint="ceny k septembru 2026">
+      <Advanced title="Palivo alebo energia" hint="ceny k októbru 2026">
         <SelectField
           label="Pohon"
           value={car.fuel}

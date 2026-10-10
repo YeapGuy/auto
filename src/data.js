@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // Vstupné dáta. Všetky čísla sú z reálnych zdrojov uvedených v SOURCES nižšie.
-// Stav: september 2026.
+// Stav: október 2026.
 // ---------------------------------------------------------------------------
 
 export const SOURCES = [
@@ -15,12 +15,6 @@ export const SOURCES = [
     label: 'Ceny pohonných látok, október 2026 (ŠÚ SR)',
     url: 'https://slovak.statistics.sk/wps/portal/ext/products/informationmessages/inf_sprava_detail/a3730ee1-b133-4b2e-83e9-41077955559e/',
     note: 'Benzín 95: 1,845 €/l · Nafta: 1,972 €/l · LPG: 0,818 €/l.',
-  },
-  {
-    id: 'lpg',
-    label: 'Ceny LPG na Slovensku 2026 (Natankuj.sk / GlobalPetrolPrices)',
-    url: 'https://www.globalpetrolprices.com/Slovakia/lpg_prices/',
-    note: 'Autoplyn sa v roku 2026 pohybuje okolo 0,85–0,91 €/l.',
   },
   {
     id: 'pzp',
