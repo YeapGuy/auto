@@ -888,8 +888,8 @@ function CarAdvanced({ car, set, fuelMeta }) {
             car.fuel === 'ev'
               ? 'Doma 0,22 €/kWh, verejná DC nabíjačka 0,38 až 0,71 €/kWh.'
               : car.fuel === 'lpg'
-              ? 'Autoplyn sa v roku 2026 pohybuje okolo 0,85 až 0,91 €/l.'
-              : 'Benzín 95: 1,768 €/l, nafta 1,917 €/l (36. týždeň 2026).'
+              ? 'LPG: 0,818 €/l (október 2026).'
+              : 'Benzín 95: 1,845 €/l, nafta 1,972 €/l (október 2026).'
           }
         />
       </Advanced>

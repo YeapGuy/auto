@@ -12,9 +12,9 @@ export const SOURCES = [
   },
   {
     id: 'palivo',
-    label: 'Ceny pohonných látok, 36. týždeň 2026 (ŠÚ SR via TASR)',
-    url: 'https://www.teraz.sk/ekonomika/ceny-pohonnych-latok-v-36-tyzdni-op/991476-clanok.html',
-    note: 'Benzín 95: 1,768 €/l · Nafta: 1,917 €/l.',
+    label: 'Ceny pohonných látok, október 2026 (ŠÚ SR)',
+    url: 'https://slovak.statistics.sk/wps/portal/ext/products/informationmessages/inf_sprava_detail/a3730ee1-b133-4b2e-83e9-41077955559e/',
+    note: 'Benzín 95: 1,845 €/l · Nafta: 1,972 €/l · LPG: 0,818 €/l.',
   },
   {
     id: 'lpg',
@@ -173,10 +173,10 @@ export const SOURCES = [
 // navýšené o ťažbu, rafináciu a dopravu paliva (well-to-wheel, +20 %, +17 %, +12 %).
 // LPG má nižšiu výhrevnosť, na rovnakú cestu ho treba o ~25–30 % viac litrov.
 export const FUELS = {
-  petrol: { label: 'Benzín', unit: 'l/100 km', price: 1.768, co2: 2.77, priceLabel: '€/l' },
-  diesel: { label: 'Nafta', unit: 'l/100 km', price: 1.917, co2: 3.09, priceLabel: '€/l' },
-  lpg: { label: 'LPG (autoplyn)', unit: 'l/100 km', price: 0.89, co2: 1.69, priceLabel: '€/l' },
-  hybrid: { label: 'Hybrid (benzín)', unit: 'l/100 km', price: 1.768, co2: 2.77, priceLabel: '€/l' },
+  petrol: { label: 'Benzín', unit: 'l/100 km', price: 1.845, co2: 2.77, priceLabel: '€/l' },
+  diesel: { label: 'Nafta', unit: 'l/100 km', price: 1.972, co2: 3.09, priceLabel: '€/l' },
+  lpg: { label: 'LPG (autoplyn)', unit: 'l/100 km', price: 0.818, co2: 1.69, priceLabel: '€/l' },
+  hybrid: { label: 'Hybrid (benzín)', unit: 'l/100 km', price: 1.845, co2: 2.77, priceLabel: '€/l' },
   ev: { label: 'Elektromobil', unit: 'kWh/100 km', price: 0.28, co2: 0.092, priceLabel: '€/kWh' },
 }
 
@@ -291,7 +291,7 @@ export const PROFILES = [
       kmYear: 10000,
       fuel: 'petrol',
       consumption: 6.5,
-      fuelPrice: 1.768,
+      fuelPrice: 1.845,
       pzp: 160,
       kasko: 0,
       vignette: 90,
@@ -315,7 +315,7 @@ export const PROFILES = [
       kmYear: 20000,
       fuel: 'diesel',
       consumption: 6.0,
-      fuelPrice: 1.917,
+      fuelPrice: 1.972,
       pzp: 190,
       kasko: 280,
       vignette: 90,
@@ -339,7 +339,7 @@ export const PROFILES = [
       kmYear: 15000,
       fuel: 'petrol',
       consumption: 7.8,
-      fuelPrice: 1.768,
+      fuelPrice: 1.845,
       pzp: 210,
       kasko: 550,
       vignette: 90,
@@ -387,7 +387,7 @@ export const PROFILES = [
       kmYear: 5000,
       fuel: 'petrol',
       consumption: 7,
-      fuelPrice: 1.768,
+      fuelPrice: 1.845,
       pzp: 105,
       kasko: 0,
       vignette: 11,
